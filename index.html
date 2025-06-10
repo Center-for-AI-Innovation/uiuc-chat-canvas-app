@@ -62,9 +62,12 @@
         </div>
     </div>
 
-    <!-- Load config first -->
-    <script src="config.js"></script>
     <script>
+        // Configuration
+        const config = {
+            API_KEY: 'uc_4d34e989356e4e73b5b4a50fea694a3b'
+        };
+
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
@@ -110,6 +113,7 @@
             };
 
             try {
+                console.log('Sending request to API:', data);
                 const response = await fetch('https://uiuc.chat/api/chat-api/chat', {
                     method: 'POST',
                     headers: {
@@ -118,11 +122,22 @@
                     body: JSON.stringify(data)
                 });
 
+                console.log('Response status:', response.status);
                 const result = await response.json();
+                console.log('API Response:', result);
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${result.message || response.statusText}`);
+                }
+
+                if (!result.message) {
+                    throw new Error('No message in API response');
+                }
+
                 addMessage(result.message);
             } catch (error) {
-                console.error('Error:', error);
-                addMessage('Sorry, there was an error processing your message.');
+                console.error('Error details:', error);
+                addMessage(`Error: ${error.message || 'Failed to get response from the server'}`);
             }
         }
 
