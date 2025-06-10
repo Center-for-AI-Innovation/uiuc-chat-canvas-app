@@ -62,8 +62,9 @@
         </div>
     </div>
 
+    <!-- Load config first -->
+    <script src="config.js"></script>
     <script>
-        const API_KEY = 'uc_4d34e989356e4e73b5b4a50fea694a3b';
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
@@ -101,7 +102,7 @@
                         content: message
                     }
                 ],
-                api_key: API_KEY,
+                api_key: config.API_KEY,
                 course_name: courseId,
                 stream: false,
                 temperature: 0.1,
