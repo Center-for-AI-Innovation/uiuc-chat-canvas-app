@@ -1,10 +1,24 @@
- # Configuration files
+ # Sensitive files
+*.pem
+*.key
 config.js
 
 # Environment files
 .env
 .env.local
 .env.*.local
+
+# Dependencies
+node_modules/
+proxy-server/node_modules/
+react-app/node_modules/
+
+# Build outputs
+react-app/.next/
+
+# Backup files
+*.backup
+*.corrupted
 
 # IDE files
 .vscode/
@@ -13,3 +27,7 @@ config.js
 # OS files
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
