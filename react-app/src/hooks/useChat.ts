@@ -96,11 +96,6 @@ export function useChat() {
               return;
             }
             
-            if (data.test) {
-              console.log('Test message received:', data.test);
-              return;
-            }
-            
             if (data.content) {
               // Update the streaming message with accumulated content
               setMessages(prev => prev.map(msg => 
@@ -108,7 +103,11 @@ export function useChat() {
                   ? { ...msg, content: data.content, isStreaming: !data.done }
                   : msg
               ));
-              console.log('Updated message content, length:', data.content.length, 'done:', data.done);
+              
+              if (data.chunk) {
+                console.log('Received chunk:', data.chunk.length, 'chars');
+              }
+              console.log('Updated message content, total length:', data.content.length, 'done:', data.done);
             }
             
             if (data.done) {

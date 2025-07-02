@@ -31,10 +31,10 @@ export default function MessageInput({
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-gray-50 border-t">
       <div className="flex items-end space-x-3">
         {/* Message Input */}
-        <div className="flex-1">
+        <div className="flex-1 relative">
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -42,32 +42,54 @@ export default function MessageInput({
             placeholder={placeholder}
             disabled={isLoading}
             rows={1}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+            className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 disabled:text-gray-500 shadow-sm transition-all duration-200"
             style={{
               minHeight: '48px',
               maxHeight: '120px',
             }}
           />
+          {/* Character indicator for long messages */}
+          {message.length > 100 && (
+            <span className="absolute bottom-2 right-14 text-xs text-gray-400">
+              {message.length}
+            </span>
+          )}
         </div>
 
         {/* Send Button */}
         <button
           onClick={handleSend}
           disabled={!message.trim() || isLoading}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-medium hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
         >
           {isLoading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm">Sending...</span>
+            </div>
           ) : (
-            'Send'
+            <div className="flex items-center space-x-2">
+              <span>Send</span>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </div>
           )}
         </button>
       </div>
       
       {/* Helpful hint */}
-      <p className="text-xs text-gray-500 mt-2">
-        Press Enter to send, Shift+Enter for new line
-      </p>
+      <div className="flex items-center justify-between mt-3">
+        <p className="text-xs text-gray-500">
+          Press Enter to send • Shift+Enter for new line
+        </p>
+        <div className="flex items-center space-x-1 text-xs text-gray-400">
+          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+          </svg>
+          <span>Secure & Private</span>
+        </div>
+      </div>
     </div>
   );
 }

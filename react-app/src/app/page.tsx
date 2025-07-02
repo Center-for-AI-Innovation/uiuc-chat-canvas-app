@@ -29,10 +29,13 @@ export default function ChatPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading UIUC Course Chat...</p>
+          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">UIUC Course Chat</h2>
+          <p className="text-gray-600">Initializing your AI assistant...</p>
         </div>
       </div>
     );
@@ -40,35 +43,34 @@ export default function ChatPage() {
 
   if (!ltiContext) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-xl font-semibold text-gray-800 mb-2">
-            Unable to load course context
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="text-center max-w-md px-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-semibold text-gray-800 mb-3">
+            Canvas Integration Required
           </h1>
-          <p className="text-gray-600">
-            Please access this app through Canvas.
+          <p className="text-gray-600 mb-4">
+            This AI assistant needs to be accessed through Canvas to load your course context.
           </p>
+          <div className="bg-white bg-opacity-60 rounded-lg p-4 border border-gray-200">
+            <p className="text-sm text-gray-700">
+              Please launch this app from your Canvas course navigation menu.
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <h1 className="text-lg font-semibold text-gray-800">
-            UIUC Course Chat
-          </h1>
-          <p className="text-sm text-gray-600">
-            {ltiContext.courseName} • Welcome, {ltiContext.userName}
-          </p>
-        </div>
-      </header>
-      
-      <main className="max-w-4xl mx-auto p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-gray-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl">
         <ChatContainer ltiContext={ltiContext} />
-      </main>
+      </div>
     </div>
   );
 }
