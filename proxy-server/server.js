@@ -279,15 +279,26 @@ app.post('/api/chat/stream', (req, res) => {
     
     // Set proper SSE headers FIRST
     res.writeHead(200, {
-        'Content-Type': 'text/plain',
-        'Cache-Control': 'no-cache',
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Cache-Control'
+        'Access-Control-Allow-Headers': 'Cache-Control, Content-Type',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'X-Accel-Buffering': 'no', // Disable nginx buffering
+        'Content-Encoding': 'identity' // Prevent compression
     });
     
     // Send initial connection confirmation (proper SSE format)
     res.write(`data: ${JSON.stringify({ type: 'connected' })}\n\n`);
+    console.log('Sent connected message to client');
+    
+    // Handle client disconnect
+    let clientDisconnected = false;
+    req.on('close', () => {
+        console.log('Client disconnected from stream');
+        clientDisconnected = true;
+    });
 
     // Validate request body
     if (!req.body || typeof req.body !== 'object') {
@@ -300,7 +311,7 @@ app.post('/api/chat/stream', (req, res) => {
     const requestBody = {
         ...req.body,
         api_key: API_KEY,
-        stream: true // Enable streaming in UIUC Chat API
+        stream: true // Enable streaming for real-time response
     };
 
     console.log('Streaming to UIUC API...');
@@ -318,34 +329,61 @@ app.post('/api/chat/stream', (req, res) => {
             throw new Error(`API error: ${response.statusText}`);
         }
 
-        console.log('Received response from UIUC API');
+        console.log('Starting real-time streaming from UIUC API');
         
-        // For streaming responses, process the body as text
-        const responseText = await response.text();
-        console.log('API response text length:', responseText.length);
+        // Process streaming response in real-time
+        let accumulatedContent = '';
         
-        if (responseText) {
-            // Send the complete response as streaming content
-            res.write(`data: ${JSON.stringify({ content: responseText, done: true })}\n\n`);
-            console.log('Sent complete response to client');
-        } else {
-            res.write(`data: ${JSON.stringify({ error: 'Empty response from API' })}\n\n`);
-        }
+        // Handle the streaming response with Node.js streams
+        response.body.on('data', (chunk) => {
+            if (clientDisconnected) {
+                console.log('Client disconnected, stopping stream processing');
+                return;
+            }
+            
+            const chunkText = chunk.toString('utf8');
+            accumulatedContent += chunkText;
+            
+            // Send the chunk immediately to client
+            res.write(`data: ${JSON.stringify({ 
+                content: accumulatedContent, 
+                chunk: chunkText,
+                done: false 
+            })}\n\n`);
+            
+            console.log('Streamed chunk:', chunkText.length, 'chars');
+        });
         
-        res.end();
+        response.body.on('end', () => {
+            if (!clientDisconnected) {
+                // Send final message indicating completion
+                res.write(`data: ${JSON.stringify({ 
+                    content: accumulatedContent, 
+                    done: true 
+                })}\n\n`);
+                
+                console.log('Stream completed. Total content:', accumulatedContent.length, 'chars');
+                res.end();
+            }
+        });
+        
+        response.body.on('error', (error) => {
+            console.error('Stream error:', error);
+            if (!clientDisconnected) {
+                res.write(`data: ${JSON.stringify({ error: 'Stream error: ' + error.message })}\n\n`);
+                res.end();
+            }
+        });
     })
     .catch(error => {
         console.error('Streaming API error:', error);
-        res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
-        res.end();
-    });
-
-    // Handle client disconnect
-    req.on('close', () => {
-        console.log('Client disconnected from stream');
-        res.end();
+        if (!clientDisconnected) {
+            res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+            res.end();
+        }
     });
 });
+
 
 // Chat endpoint (non-streaming fallback)
 app.post('/proxy/chat', async (req, res) => {

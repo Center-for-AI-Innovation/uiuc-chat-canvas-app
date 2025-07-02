@@ -23,7 +23,7 @@ export default function ChatContainer({ ltiContext }: ChatContainerProps) {
             </svg>
           </div>
           <div>
-            <h1 className="font-semibold text-lg">UIUC Course Chat</h1>
+            <h1 className="font-semibold text-lg">Illinois Chat</h1>
             <p className="text-sm text-orange-100">
               Welcome, {ltiContext.userName} • {ltiContext.courseName}
             </p>

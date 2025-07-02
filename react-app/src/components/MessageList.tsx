@@ -33,7 +33,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
               <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">Welcome to UIUC Course Chat</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">Welcome to Illinois Chat</h3>
           <p className="text-gray-600 mb-6 leading-relaxed">
             I&apos;m here to help you with course materials, assignments, lecture content, and any questions about your coursework.
           </p>
@@ -71,7 +71,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
             </div>
             <div className="flex flex-col items-start">
               <span className="text-xs font-medium mb-1 text-blue-600">
-                UIUC Assistant
+                Illinois Assistant
               </span>
               <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
                 <div className="flex items-center space-x-2">

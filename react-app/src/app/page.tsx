@@ -34,7 +34,7 @@ export default function ChatPage() {
           <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">UIUC Course Chat</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Illinois Chat</h2>
           <p className="text-gray-600">Initializing your AI assistant...</p>
         </div>
       </div>
