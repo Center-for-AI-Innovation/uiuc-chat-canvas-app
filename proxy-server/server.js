@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 const API_KEY = process.env.UIUC_API_KEY || 'your-api-key-here';
 const API_URL = process.env.UIUC_API_URL || 'https://uiuc.chat/api/chat-api/chat';
 
@@ -15,7 +15,7 @@ const corsOrigins = process.env.CORS_ORIGINS ?
     process.env.CORS_ORIGINS.split(',').map(origin => 
         origin.includes('*') ? new RegExp(origin.replace(/\*/g, '.*')) : origin
     ) : 
-    ['https://arluigi.github.io', /.*\.instructure\.com$/, /.*\.canvas\..*$/];
+    ['https://arluigi.github.io', /.*\.instructure\.com$/, /.*\.canvas\..*$/, 'http://localhost:3000'];
 
 app.use(cors({
     origin: corsOrigins,
@@ -274,77 +274,71 @@ app.get('/react', (_, res) => {
 });
 
 // Real streaming chat endpoint using proper SSE format
-app.post('/api/chat/stream', (req, res) => {
+app.post('/api/chat/stream', async (req, res) => {
     console.log('SSE streaming chat request received');
     
-    // Set proper SSE headers FIRST
+    // Set proper SSE headers
     res.writeHead(200, {
-        'Content-Type': 'text/plain',
+        'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Cache-Control'
+        'X-Accel-Buffering': 'no'
     });
-    
-    // Send initial connection confirmation (proper SSE format)
-    res.write(`data: ${JSON.stringify({ type: 'connected' })}\n\n`);
 
-    // Validate request body
-    if (!req.body || typeof req.body !== 'object') {
-        res.write(`data: ${JSON.stringify({ error: 'Invalid request body' })}\n\n`);
-        res.end();
-        return;
-    }
+    try {
+        // Prepare API request
+        const requestBody = {
+            ...req.body,
+            api_key: API_KEY,
+            stream: true
+        };
 
-    // Prepare API request with streaming enabled
-    const requestBody = {
-        ...req.body,
-        api_key: API_KEY,
-        stream: true // Enable streaming in UIUC Chat API
-    };
+        console.log('Calling UIUC API with streaming...');
 
-    console.log('Streaming to UIUC API...');
+        // Make streaming request to UIUC API
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
 
-    // Call UIUC Chat API with streaming
-    fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-    })
-    .then(async response => {
         if (!response.ok) {
-            throw new Error(`API error: ${response.statusText}`);
+            throw new Error(`API error: ${response.status} ${response.statusText}`);
         }
 
-        console.log('Received response from UIUC API');
+        console.log('Got streaming response from UIUC API');
+
+        // Just accumulate all chunks and send as one message
+        let fullContent = '';
         
-        // For streaming responses, process the body as text
-        const responseText = await response.text();
-        console.log('API response text length:', responseText.length);
-        
-        if (responseText) {
-            // Send the complete response as streaming content
-            res.write(`data: ${JSON.stringify({ content: responseText, done: true })}\n\n`);
-            console.log('Sent complete response to client');
-        } else {
-            res.write(`data: ${JSON.stringify({ error: 'Empty response from API' })}\n\n`);
-        }
-        
-        res.end();
-    })
-    .catch(error => {
-        console.error('Streaming API error:', error);
+        response.body.on('data', (chunk) => {
+            const text = chunk.toString();
+            // console.log('Received chunk:', text);
+            fullContent += text;
+            // Send each chunk as SSE data
+            res.write(`data: ${JSON.stringify({ content: fullContent, done: false })}\n\n`);
+        });
+
+        response.body.on('end', () => {
+            console.log('UIUC stream ended');
+            res.write(`data: ${JSON.stringify({ content: fullContent, done: true })}\n\n`);
+            res.end();
+        });
+
+        response.body.on('error', (error) => {
+            console.error('Stream error:', error);
+            res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+            res.end();
+        });
+
+    } catch (error) {
+        console.error('Streaming error:', error);
         res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
         res.end();
-    });
-
-    // Handle client disconnect
-    req.on('close', () => {
-        console.log('Client disconnected from stream');
-        res.end();
-    });
+    }
 });
 
 // Chat endpoint (non-streaming fallback)

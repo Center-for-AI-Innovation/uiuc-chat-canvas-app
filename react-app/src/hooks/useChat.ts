@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { ChatAPIRequest, Message } from '@/types';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { Message, ChatAPIRequest } from '@/types';
+import { useCallback, useState } from 'react';
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -64,12 +64,18 @@ export function useChat() {
 
       console.log('Starting fetchEventSource...');
 
-      await fetchEventSource('/api/chat/stream', {
+      // Determine the API URL based on environment
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? '/api/chat/stream'  // In production, use relative URL
+        : 'http://localhost:3001/api/chat/stream'; // In development, use proxy server URL
+
+      await fetchEventSource(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(apiRequest),
+        openWhenHidden: true,
         
         async onopen(response) {
           console.log('Stream opened:', response.status, response.statusText);
