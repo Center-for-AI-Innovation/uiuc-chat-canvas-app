@@ -31,8 +31,8 @@ export default function ChatPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading UIUC Course Chat...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4" style={{borderBottomColor: '#FF5F05'}}></div>
+          <p className="text-gray-600">Loading Illinois Chat...</p>
         </div>
       </div>
     );
@@ -54,15 +54,26 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <h1 className="text-lg font-semibold text-gray-800">
-            UIUC Course Chat
-          </h1>
-          <p className="text-sm text-gray-600">
-            {ltiContext.courseName} • Welcome, {ltiContext.userName}
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      <header className="shadow-lg" style={{backgroundColor: '#13294B'}}>
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-12">
+              <img 
+                src="/illinois-block-i.svg" 
+                alt="Illinois Block I" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-white">
+                Illinois Chat
+              </h1>
+              <p className="text-sm text-blue-200">
+                {ltiContext.courseName} • Welcome, {ltiContext.userName}
+              </p>
+            </div>
+          </div>
         </div>
       </header>
       

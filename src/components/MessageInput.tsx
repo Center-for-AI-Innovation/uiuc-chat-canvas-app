@@ -32,7 +32,7 @@ export default function MessageInput({
 
   return (
     <div className="p-4">
-      <div className="flex items-end space-x-3">
+      <div className="flex items-start space-x-3">
         {/* Message Input */}
         <div className="flex-1">
           <textarea
@@ -42,11 +42,12 @@ export default function MessageInput({
             placeholder={placeholder}
             disabled={isLoading}
             rows={1}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
             style={{
               minHeight: '48px',
               maxHeight: '120px',
-            }}
+              '--tw-ring-color': '#FF5F05'
+            } as React.CSSProperties}
           />
         </div>
 
@@ -54,7 +55,13 @@ export default function MessageInput({
         <button
           onClick={handleSend}
           disabled={!message.trim() || isLoading}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-3 text-white rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          style={{
+            backgroundColor: '#FF5F05',
+            borderColor: '#FF5F05'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e55404'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF5F05'}
         >
           {isLoading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

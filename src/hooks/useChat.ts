@@ -64,10 +64,8 @@ export function useChat() {
 
       console.log('Starting fetchEventSource...');
 
-      // Determine the API URL based on environment
-      const apiUrl = process.env.NODE_ENV === 'production' 
-        ? '/api/chat/stream'  // In production, use relative URL
-        : 'http://localhost:3001/api/chat/stream'; // In development, use proxy server URL
+      // Use Next.js API route for all environments
+      const apiUrl = '/api/chat';
 
       await fetchEventSource(apiUrl, {
         method: 'POST',

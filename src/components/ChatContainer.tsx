@@ -13,10 +13,10 @@ export default function ChatContainer({ ltiContext }: ChatContainerProps) {
   const { messages, isLoading, error, sendMessage } = useChat();
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border h-[600px] flex flex-col">
+    <div className="bg-white rounded-lg shadow-lg border h-[600px] flex flex-col">
       {/* Welcome Message */}
-      <div className="p-4 border-b bg-blue-50">
-        <p className="text-sm text-blue-700">
+      <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-orange-50">
+        <p className="text-sm text-blue-800">
           👋 Welcome, {ltiContext.userName}! Ask me anything about {ltiContext.courseName}.
         </p>
       </div>
