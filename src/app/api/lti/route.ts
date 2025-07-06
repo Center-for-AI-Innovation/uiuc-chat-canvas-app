@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,49 +10,47 @@ export async function POST(request: NextRequest) {
     console.log('Body:', body);
 
     // Extract course info from LTI parameters
-    const courseId = body.context_id || body.custom_canvas_course_id || 'BADM-350-Summer-2025';
-    const userId = body.user_id || 'anonymous';
-    const userName = body.lis_person_name_full || 'User';
+    const courseId = String(body.context_id || body.custom_canvas_course_id || 'BADM-350-Summer-2025');
+    const userId = String(body.user_id || 'anonymous');
+    const userName = String(body.lis_person_name_full || 'User');
+    const courseName = String(body.context_title || 'BADM 350: IT for Networked Organizations');
 
-    // Read the built React app HTML
-    const htmlPath = join(process.cwd(), '.next/server/app/page.html');
-    let htmlContent: string;
-    
-    try {
-      htmlContent = readFileSync(htmlPath, 'utf8');
-    } catch {
-      // Fallback to a basic template if the built HTML isn't available
-      htmlContent = `
+    // Create a simple HTML page that redirects to the main app with LTI context
+    const htmlContent = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Illinois Chat</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="/_next/static/chunks/polyfills.js"></script>
-    <script src="/_next/static/chunks/webpack.js"></script>
-    <script src="/_next/static/chunks/main-app.js"></script>
-</head>
-<body>
-    <div id="__next"></div>
-    <script src="/_next/static/chunks/app/layout.js"></script>
-    <script src="/_next/static/chunks/app/page.js"></script>
-</body>
-</html>`;
-    }
-
-    // Inject LTI context into the HTML
-    const ltiContextScript = `
     <script>
+        // Set LTI context in window object
         window.LTI_CONTEXT = {
             courseId: '${courseId}',
             userId: '${userId}',
-            userName: '${userName}',
-            courseName: 'BADM 350: IT for Networked Organizations'
+            userName: '${userName.replace(/'/g, "\\'")}',
+            courseName: '${courseName.replace(/'/g, "\\'")}'
         };
-    </script>`;
-
-    // Insert the script before the closing </head> tag
-    htmlContent = htmlContent.replace('</head>', ltiContextScript + '</head>');
+        
+        // Redirect to main app after setting context
+        window.location.href = '/';
+    </script>
+</head>
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif;">
+        <div style="text-align: center;">
+            <div style="width: 40px; height: 40px; border: 4px solid #FF5F05; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <p>Loading Illinois Chat...</p>
+        </div>
+    </div>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>`;
 
     return new NextResponse(htmlContent, {
       headers: {
