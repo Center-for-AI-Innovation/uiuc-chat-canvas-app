@@ -31,16 +31,8 @@ export default function ChatPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 flex items-center justify-center">
         <div className="text-center">
-<<<<<<< HEAD:react-app/src/app/page.tsx
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-          </div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Illinois Chat</h2>
-          <p className="text-gray-600">Initializing your AI assistant...</p>
-=======
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4" style={{borderBottomColor: '#FF5F05'}}></div>
           <p className="text-gray-600">Loading Illinois Chat...</p>
->>>>>>> sync-with-rohan:src/app/page.tsx
         </div>
       </div>
     );
@@ -72,10 +64,6 @@ export default function ChatPage() {
   }
 
   return (
-<<<<<<< HEAD:react-app/src/app/page.tsx
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-gray-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl">
-=======
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <header className="shadow-lg" style={{backgroundColor: '#13294B'}}>
         <div className="max-w-4xl mx-auto px-4 py-4">
@@ -100,9 +88,8 @@ export default function ChatPage() {
       </header>
       
       <main className="max-w-4xl mx-auto p-4">
->>>>>>> sync-with-rohan:src/app/page.tsx
         <ChatContainer ltiContext={ltiContext} />
-      </div>
+      </main>
     </div>
   );
 }
