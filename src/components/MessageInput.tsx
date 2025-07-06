@@ -31,8 +31,13 @@ export default function MessageInput({
   };
 
   return (
+<<<<<<< HEAD:react-app/src/components/MessageInput.tsx
     <div className="p-4 bg-gray-50 border-t">
       <div className="flex items-end space-x-3">
+=======
+    <div className="p-4">
+      <div className="flex items-start space-x-3">
+>>>>>>> sync-with-rohan:src/components/MessageInput.tsx
         {/* Message Input */}
         <div className="flex-1 relative">
           <textarea
@@ -42,11 +47,16 @@ export default function MessageInput({
             placeholder={placeholder}
             disabled={isLoading}
             rows={1}
+<<<<<<< HEAD:react-app/src/components/MessageInput.tsx
             className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 disabled:text-gray-500 shadow-sm transition-all duration-200 text-gray-900"
+=======
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+>>>>>>> sync-with-rohan:src/components/MessageInput.tsx
             style={{
               minHeight: '48px',
               maxHeight: '120px',
-            }}
+              '--tw-ring-color': '#FF5F05'
+            } as React.CSSProperties}
           />
           {/* Character indicator for long messages */}
           {message.length > 100 && (
@@ -60,7 +70,17 @@ export default function MessageInput({
         <button
           onClick={handleSend}
           disabled={!message.trim() || isLoading}
+<<<<<<< HEAD:react-app/src/components/MessageInput.tsx
           className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-medium hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+=======
+          className="px-6 py-3 text-white rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          style={{
+            backgroundColor: '#FF5F05',
+            borderColor: '#FF5F05'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e55404'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF5F05'}
+>>>>>>> sync-with-rohan:src/components/MessageInput.tsx
         >
           {isLoading ? (
             <div className="flex items-center space-x-2">

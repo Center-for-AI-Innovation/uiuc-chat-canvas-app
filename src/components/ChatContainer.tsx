@@ -13,6 +13,7 @@ export default function ChatContainer({ ltiContext }: ChatContainerProps) {
   const { messages, isLoading, error, sendMessage } = useChat();
 
   return (
+<<<<<<< HEAD:react-app/src/components/ChatContainer.tsx
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 h-[600px] flex flex-col overflow-hidden">
       {/* Header with UIUC Branding */}
       <div className="bg-gradient-to-r from-orange-500 to-blue-600 p-4 text-white">
@@ -29,6 +30,14 @@ export default function ChatContainer({ ltiContext }: ChatContainerProps) {
             </p>
           </div>
         </div>
+=======
+    <div className="bg-white rounded-lg shadow-lg border h-[600px] flex flex-col">
+      {/* Welcome Message */}
+      <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-orange-50">
+        <p className="text-sm text-blue-800">
+          👋 Welcome, {ltiContext.userName}! Ask me anything about {ltiContext.courseName}.
+        </p>
+>>>>>>> sync-with-rohan:src/components/ChatContainer.tsx
       </div>
 
       {/* Messages Area */}
