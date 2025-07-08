@@ -1,0 +1,14 @@
+
+> react-app@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Port 3000 is in use, using available port 3001 instead.
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.1.14:3001
+   - Environments: .env
+
+ ✓ Starting...
+Slow filesystem detected. If /Users/aryansachdev/canvasbot/.next is a network drive, consider moving it to a local folder. If you have an antivirus enabled, consider excluding your project directory.
+ ✓ Ready in 925ms
+[?25h

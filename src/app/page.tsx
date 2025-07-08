@@ -9,20 +9,31 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get LTI context from window object (injected by server)
-    const windowWithLTI = window as Window & { LTI_CONTEXT?: LTIContext };
-    if (typeof window !== 'undefined' && windowWithLTI.LTI_CONTEXT) {
-      setLTIContext(windowWithLTI.LTI_CONTEXT);
-      setIsLoading(false);
-    } else {
-      // Fallback for development
-      const fallbackContext: LTIContext = {
-        courseId: 'BADM-350-Summer-2025',
-        userId: 'dev-user',
-        userName: 'Development User',
-        courseName: 'BADM 350: IT for Networked Organizations'
-      };
-      setLTIContext(fallbackContext);
+    // Get LTI context from URL parameters (set by LTI redirect)
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isLTILaunch = urlParams.get('lti') === 'true';
+      
+      if (isLTILaunch) {
+        const ltiContextFromURL: LTIContext = {
+          courseId: urlParams.get('courseId') || 'BADM-350-Summer-2025',
+          userId: urlParams.get('userId') || 'dev-user',
+          userName: urlParams.get('userName') || 'Development User',
+          courseName: urlParams.get('courseName') || 'BADM 350: IT for Networked Organizations'
+        };
+        setLTIContext(ltiContextFromURL);
+        // Clean up URL after extracting parameters
+        window.history.replaceState({}, '', '/');
+      } else {
+        // Fallback for development/direct access
+        const fallbackContext: LTIContext = {
+          courseId: 'BADM-350-Summer-2025',
+          userId: 'dev-user',
+          userName: 'Development User',
+          courseName: 'BADM 350: IT for Networked Organizations'
+        };
+        setLTIContext(fallbackContext);
+      }
       setIsLoading(false);
     }
   }, []);
