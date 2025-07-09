@@ -29,17 +29,8 @@ export function useChat() {
 
     setMessages(prev => [...prev, userMessage]);
 
-    // Create AI message placeholder for streaming
+    // Store AI message ID for later, but don't create the message yet
     const aiMessageId = (Date.now() + 1).toString();
-    const aiMessage: Message = {
-      id: aiMessageId,
-      content: '',
-      isUser: false,
-      timestamp: new Date(),
-      isStreaming: true,
-    };
-
-    setMessages(prev => [...prev, aiMessage]);
     setStreamingMessageId(aiMessageId);
 
     try {
@@ -101,12 +92,29 @@ export function useChat() {
             }
             
             if (data.content) {
-              // Update the streaming message with accumulated content
-              setMessages(prev => prev.map(msg => 
-                msg.id === aiMessageId 
-                  ? { ...msg, content: data.content, isStreaming: !data.done }
-                  : msg
-              ));
+              // Create AI message on first content, or update existing
+              setMessages(prev => {
+                const existingMsg = prev.find(msg => msg.id === aiMessageId);
+                if (existingMsg) {
+                  // Update existing message
+                  return prev.map(msg => 
+                    msg.id === aiMessageId 
+                      ? { ...msg, content: data.content, isStreaming: !data.done }
+                      : msg
+                  );
+                } else {
+                  // Create new AI message
+                  const aiMessage: Message = {
+                    id: aiMessageId,
+                    content: data.content,
+                    isUser: false,
+                    timestamp: new Date(),
+                    isStreaming: !data.done,
+                  };
+                  setIsLoading(false); // Stop loading indicator once streaming starts
+                  return [...prev, aiMessage];
+                }
+              });
               
               if (data.chunk) {
                 console.log('Received chunk:', data.chunk.length, 'chars');
@@ -143,19 +151,33 @@ export function useChat() {
 
     } catch (err) {
       console.error('Chat error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
-      setError(errorMessage);
+      const errorText = err instanceof Error ? err.message : 'Failed to send message';
+      setError(errorText);
 
-      // Update the AI message with error
-      setMessages(prev => prev.map(msg => 
-        msg.id === aiMessageId 
-          ? { 
-              ...msg, 
-              content: `Sorry, I encountered an error: ${errorMessage}`,
-              isStreaming: false 
-            }
-          : msg
-      ));
+      // Create or update AI message with error
+      setMessages(prev => {
+        const existingMsg = prev.find(msg => msg.id === aiMessageId);
+        if (existingMsg) {
+          return prev.map(msg => 
+            msg.id === aiMessageId 
+              ? { 
+                  ...msg, 
+                  content: `Sorry, I encountered an error: ${errorText}`,
+                  isStreaming: false 
+                }
+              : msg
+          );
+        } else {
+          const errorMessage: Message = {
+            id: aiMessageId,
+            content: `Sorry, I encountered an error: ${errorText}`,
+            isUser: false,
+            timestamp: new Date(),
+            isStreaming: false,
+          };
+          return [...prev, errorMessage];
+        }
+      });
     } finally {
       setIsLoading(false);
       setStreamingMessageId(null);
