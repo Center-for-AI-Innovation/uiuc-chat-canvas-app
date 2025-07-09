@@ -7,9 +7,10 @@ import { Message as MessageType } from '@/types';
 interface MessageListProps {
   messages: MessageType[];
   isLoading: boolean;
+  onSendMessage?: (message: string) => void;
 }
 
-export default function MessageList({ messages, isLoading }: MessageListProps) {
+export default function MessageList({ messages, isLoading, onSendMessage }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -28,7 +29,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
         backgroundSize: '100px 100px'
       }}>
         <div className="text-center max-w-md">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
             </svg>
@@ -37,13 +38,28 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
           <p className="text-gray-600 mb-6 leading-relaxed">
             I&apos;m here to help you with course materials, assignments, lecture content, and any questions about your coursework.
           </p>
-          <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-gray-200">
-            <p className="text-sm text-gray-700 font-medium mb-2">Try asking:</p>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• &quot;What&apos;s due this week?&quot;</li>
-              <li>• &quot;Explain today&apos;s lecture topic&quot;</li>
-              <li>• &quot;Help with assignment guidelines&quot;</li>
-            </ul>
+          <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-gray-300">
+            <p className="text-sm text-gray-700 font-medium mb-3">Try asking:</p>
+            <div className="flex flex-col items-center space-y-2">
+              <button
+                onClick={() => onSendMessage?.("What's due this week?")}
+                className="bg-blue-100 text-blue-900 hover:bg-blue-200 rounded-md px-1.5 py-0.5 border border-blue-300 transition-colors duration-200 inline-block text-sm"
+              >
+                📅 What&apos;s due this week?
+              </button>
+              <button
+                onClick={() => onSendMessage?.("Explain today's lecture topic")}
+                className="bg-blue-100 text-blue-900 hover:bg-blue-200 rounded-md px-1.5 py-0.5 border border-blue-300 transition-colors duration-200 inline-block text-sm"
+              >
+                📚 Explain today&apos;s lecture topic
+              </button>
+              <button
+                onClick={() => onSendMessage?.("Help with assignment guidelines")}
+                className="bg-blue-100 text-blue-900 hover:bg-blue-200 rounded-md px-1.5 py-0.5 border border-blue-300 transition-colors duration-200 inline-block text-sm"
+              >
+                📝 Help with assignment guidelines
+              </button>
+            </div>
           </div>
         </div>
       </div>

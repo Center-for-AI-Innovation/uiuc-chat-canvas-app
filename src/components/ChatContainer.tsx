@@ -23,7 +23,7 @@ export default function ChatContainer({ ltiContext }: ChatContainerProps) {
 
       {/* Messages Area */}
       <div className="flex-1 overflow-hidden">
-        <MessageList messages={messages} isLoading={isLoading} />
+        <MessageList messages={messages} isLoading={isLoading} onSendMessage={sendMessage} />
       </div>
 
       {/* Error Display */}
